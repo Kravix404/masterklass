@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Galkin Dvor | Мастер-классы</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Glassmorphism, gradients, adaptive, custom scrollbars -->
+  <style>
+    :root {
+      --primary1: #667eea;
+      --primary2: #764ba2;
+      --accent1: #f093fb;
+      --accent2: #f5576c;
+      --bg: #f8f9fa;
+      --text: #2d3748;
+      --glass: rgba(255,255,255,0.25);
+      --shadow: 0 8px 32px 0 rgba(102,126,234,0.2);
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--primary1), var(--primary2));
+      min-height: 100vh;
+      color: var(--text);
+      transition: background 1s;
+    }
+    body {
+      background: linear-gradient(135deg, var(--primary1), var(--primary2));
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    /* Glassmorphism card */
+    .glass-card {
+      background: var(--glass);
+      box-shadow: var(--shadow);
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 2.5rem 2rem;
+      margin: auto;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+      animation: fadeIn 1s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    /* Gradient button */
+    .btn {
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 0.8em 2em;
+      font-size: 1.1em;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(120,80,200,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 1em;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 16px rgba(120,80,200,0.18);
+    }
+    /* Switcher */
+    .switcher {
+      display: flex;
+      justify-content: center;
+      margin: 1em 0;
+      gap: 1em;
+    }
+    .switcher label {
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--primary2);
+      transition: color 0.2s;
+    }
+    .switcher input[type="radio"] {
+      accent-color: var(--accent2);
+      margin-right: 0.3em;
+    }
+    /* Error message */
+    .error-msg {
+      color: var(--accent2);
+      background: rgba(245,87,108,0.08);
+      border-radius: 8px;
+      padding: 0.5em 1em;
+      margin-top: 1em;
+      font-size: 1em;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.4s, transform 0.4s;
+      position: absolute;
+      left: 0; right: 0;
+    }
+    .error-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Success message */
+    .success-msg {
+      color: var(--primary1);
+      background: rgba(102,126,234,0.08);
+      border-radius: 8px;
+      padding: 0.5em 1em;
+      margin-top: 1em;
+      font-size: 1em;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.4s, transform 0.4s;
+      position: absolute;
+      left: 0; right: 0;
+    }
+    .success-msg.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      width: 220px;
+      background: linear-gradient(135deg, var(--primary1), var(--primary2));
+      color: #fff;
+      box-shadow: 2px 0 16px rgba(102,126,234,0.08);
+      padding-top: 2em;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5em;
+      font-size: 1.1em;
+      transition: left 0.4s;
+    }
+    .sidebar .nav-link {
+      padding: 0.8em 2em;
+      cursor: pointer;
+      border-radius: 8px;
+      margin: 0 1em;
+      transition: background 0.2s;
+      text-align: left;
+    }
+    .sidebar .nav-link.active, .sidebar .nav-link:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    .sidebar .logo {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 2em;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+    /* Main content */
+    .admin-content {
+      margin-left: 240px;
+      padding: 2em 2em 2em 2em;
+      min-height: 100vh;
+      background: var(--bg);
+      transition: background 1s;
+    }
+    /* Section titles */
+    .section-title {
+      font-size: 1.4em;
+      font-weight: 600;
+      margin-bottom: 1em;
+      color: var(--primary2);
+    }
+    /* Form fields */
+    .form-group {
+      margin-bottom: 1.2em;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4em;
+      font-weight: 500;
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 0.7em;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      font-size: 1em;
+      background: rgba(255,255,255,0.7);
+      margin-bottom: 0.2em;
+      transition: border 0.2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border: 1.5px solid var(--primary1);
+      outline: none;
+    }
+    /* Photo preview grid */
+    .photo-preview-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7em;
+      margin-bottom: 1em;
+    }
+    .photo-preview {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(102,126,234,0.08);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .photo-preview:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 16px rgba(102,126,234,0.18);
+    }
+    /* Progress bar */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1em;
+      display: none;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent1), var(--accent2));
+      width: 0;
+      transition: width 0.3s;
+    }
+    /* Pages list */
+    .pages-list {
+      margin-top: 1em;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 2px 8px rgba(102,126,234,0.08);
+      padding: 1em;
+    }
+    .page-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.7em 0.5em;
+      border-bottom: 1px solid #e2e8f0;
+      gap: 1em;
+    }
+    .page-item:last-child {
+      border-bottom: none;
+    }
+    .page-title {
+      font-weight: 500;
+      color: var(--primary2);
+      flex: 1;
+    }
+    .page-password {
+      font-family: monospace;
+      background: rgba(102,126,234,0.08);
+      border-radius: 6px;
+      padding: 0.2em 0.7em;
+      margin-right: 1em;
+      color: var(--accent2);
+    }
+    .page-actions button {
+      background: none;
+      border: none;
+      color: var(--primary1);
+      font-size: 1.1em;
+      cursor: pointer;
+      margin-right: 0.5em;
+      transition: color 0.2s;
+    }
+    .page-actions button:last-child {
+      margin-right: 0;
+      color: var(--accent2);
+    }
+    .page-actions button:hover {
+      color: var(--accent1);
+    }
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 2em;
+      margin-top: 1em;
+      flex-wrap: wrap;
+    }
+    .stat-card {
+      background: var(--glass);
+      box-shadow: var(--shadow);
+      border-radius: 16px;
+      padding: 1.2em 2em;
+      min-width: 180px;
+      text-align: center;
+      color: var(--primary2);
+      font-weight: 500;
+      font-size: 1.1em;
+    }
+    /* Gallery masonry */
+    .gallery-container {
+      max-width: 1200px;
+      margin: 2em auto;
+      padding: 2em;
+      background: var(--glass);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      min-height: 60vh;
+      animation: fadeIn 1s;
+    }
+    .gallery-title {
+      font-size: 2em;
+      font-weight: 700;
+      color: var(--primary2);
+      margin-bottom: 1em;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .masonry {
+      column-count: 3;
+      column-gap: 1em;
+    }
+    @media (max-width: 900px) {
+      .masonry { column-count: 2; }
+      .gallery-container { padding: 1em;}
+    }
+    @media (max-width: 600px) {
+      .masonry { column-count: 1; }
+      .gallery-container { padding: 0.5em;}
+      .sidebar { width: 100vw; left: -100vw;}
+      .admin-content { margin-left: 0;}
+    }
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 1em;
+      position: relative;
+      cursor: pointer;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(102,126,234,0.08);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .masonry-item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 16px rgba(102,126,234,0.18);
+    }
+    .masonry-img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      object-fit: cover;
+      transition: filter 0.2s;
+      filter: brightness(0.98);
+      min-height: 120px;
+      background: #e2e8f0;
+      opacity: 0;
+      transition: opacity 0.6s;
+    }
+    .masonry-img.loaded {
+      opacity: 1;
+    }
+    /* Lightbox modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .modal.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-content {
+      background: var(--glass);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 2em;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .modal-img {
+      max-width: 80vw;
+      max-height: 70vh;
+      border-radius: 16px;
+      box-shadow: 0 4px 32px rgba(102,126,234,0.18);
+      margin-bottom: 1em;
+      background: #e2e8f0;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1em; right: 1em;
+      background: none;
+      border: none;
+      font-size: 2em;
+      color: var(--accent2);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .modal-close:hover {
+      color: var(--accent1);
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: var(--bg);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, var(--primary1), var(--primary2));
+      border-radius: 8px;
+    }
+    /* Drag & drop area */
+    .drop-area {
+      border: 2px dashed var(--primary1);
+      border-radius: 12px;
+      background: rgba(102,126,234,0.06);
+      padding: 1.5em;
+      text-align: center;
+      color: var(--primary2);
+      margin-bottom: 1em;
+      transition: background 0.2s, border 0.2s;
+      cursor: pointer;
+    }
+    .drop-area.dragover {
+      background: rgba(102,126,234,0.18);
+      border-color: var(--accent2);
+    }
+    /* Animations for transitions */
+    .fade {
+      animation: fadeIn 0.7s;
+    }
+    /* Hide sections */
+    .hidden { display: none !important; }
+
+    /* Telegraph Post Style */
+    .telegraph-post {
+      max-width: 750px;
+      margin: 2em auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(102,126,234,0.08);
+      padding: 2.5em 2em;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      color: #222;
+      animation: fadeIn 1s;
+    }
+    .telegraph-header {
+      text-align: center;
+      margin-bottom: 2em;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 1.5em;
+    }
+    .telegraph-title {
+      font-size: 2em;
+      font-weight: 700;
+      margin: 0 0 0.7em 0;
+      line-height: 1.2;
+      color: var(--primary2);
+      letter-spacing: -0.5px;
+    }
+    .telegraph-meta {
+      color: #888;
+      font-size: 0.95em;
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      flex-wrap: wrap;
+    }
+    .telegraph-content {
+      font-size: 1.05em;
+      line-height: 1.8;
+      color: #333;
+    }
+    .telegraph-content p {
+      margin: 0 0 1.2em 0;
+      text-align: justify;
+    }
+    .telegraph-content h2 {
+      font-size: 1.5em;
+      font-weight: 700;
+      margin: 1.8em 0 0.8em 0;
+      color: var(--primary2);
+      line-height: 1.3;
+    }
+    .telegraph-content h3 {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin: 1.4em 0 0.6em 0;
+      color: var(--primary1);
+    }
+    .telegraph-content img {
+      width: 100%;
+      border-radius: 12px;
+      margin: 1.5em 0;
+      box-shadow: 0 4px 16px rgba(102,126,234,0.12);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      max-height: 500px;
+      object-fit: cover;
+    }
+    .telegraph-content img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 24px rgba(102,126,234,0.18);
+    }
+    /* Боковое расположение фото */
+    .photo-side {
+      float: right;
+      width: 40%;
+      margin: 0 0 1.5em 1.5em;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(102,126,234,0.12);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .photo-side:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 24px rgba(102,126,234,0.18);
+    }
+    .photo-side img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 0;
+    }
+    .photo-caption {
+      text-align: center;
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 0.5em;
+      font-style: italic;
+    }
+    @media (max-width: 800px) {
+      .photo-side {
+        float: none;
+        width: 100%;
+        margin: 1.5em 0;
+      }
+    }
+    .telegraph-content blockquote {
+      border-left: 4px solid var(--primary1);
+      background: rgba(102,126,234,0.05);
+      padding: 1em 1.5em;
+      margin: 1.5em 0;
+      font-style: italic;
+      color: #444;
+      border-radius: 4px;
+    }
+    .telegraph-content ul, .telegraph-content ol {
+      margin: 1em 0 1em 2em;
+      padding: 0;
+    }
+    .telegraph-content li {
+      margin: 0.5em 0;
+      line-height: 1.7;
+    }
+    
+    /* Editor textarea */
+    .editor-textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 1em;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      font-size: 1em;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: rgba(255,255,255,0.7);
+      resize: vertical;
+      transition: border 0.2s;
+    }
+    .editor-textarea:focus {
+      border: 1.5px solid var(--primary1);
+      outline: none;
+    }
+    .editor-buttons {
+      display: flex;
+      gap: 0.5em;
+      margin: 0.8em 0;
+      flex-wrap: wrap;
+    }
+    .editor-buttons button {
+      background: rgba(102,126,234,0.1);
+      border: 1px solid var(--primary1);
+      color: var(--primary1);
+      border-radius: 6px;
+      padding: 0.5em 1em;
+      cursor: pointer;
+      font-size: 0.95em;
+      transition: background 0.2s;
+    }
+    .editor-buttons button:hover {
+      background: rgba(102,126,234,0.2);
+    }
+    @media (max-width: 600px) {
+      .telegraph-post { padding: 1.5em 1em; }
+      .telegraph-title { font-size: 1.6em; }
+      .telegraph-content { font-size: 1em; }
+      .telegraph-meta { flex-direction: column; gap: 0.3em; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Главная страница (авторизация) -->
+  <div id="main-page" class="fade">
+    <div class="glass-card" id="auth-card">
+      <h2 style="margin-bottom:1em;">Вход на сайт</h2>
+      <div class="switcher">
+        <label>
+          <input type="radio" name="authType" value="admin" checked>
+          Админ
+        </label>
+        <label>
+          <input type="radio" name="authType" value="user">
+          Одноразовый пароль
+        </label>
+      </div>
+      <div class="form-group">
+        <input type="password" id="password-input" placeholder="Введите пароль" autocomplete="off">
+      </div>
+      <button class="btn" id="login-btn">Войти</button>
+      <div class="error-msg" id="auth-error"></div>
+      <div class="success-msg" id="auth-success"></div>
+    </div>
+  </div>
+
+  <!-- Админ-панель -->
+  <div id="admin-panel" class="hidden">
+    <div class="sidebar">
+      <div class="logo">Admin Panel</div>
+      <div class="nav-link active" data-section="create">Создать страницу</div>
+      <div class="nav-link" data-section="pages">Мои страницы</div>
+      <div class="nav-link" data-section="passwords">Управление паролями</div>
+      <div class="nav-link" data-section="stats">Статистика</div>
+      <div class="nav-link" id="export-btn">Экспорт данных</div>
+      <div class="nav-link" id="import-btn">Импорт данных</div>
+      <div class="nav-link" id="logout-btn">Выйти</div>
+    </div>
+    <div class="admin-content">
+      <!-- Создание пароля -->
+      <div id="section-create">
+        <div class="section-title">Создать новую страницу</div>
+        <form id="create-page-form">
+          <div class="form-group">
+            <label for="page-title">Заголовок страницы</label>
+            <input type="text" id="page-title" required maxlength="100" placeholder="Например, 'Мой первый пост'">
+          </div>
+          <div class="form-group">
+            <label>Содержание (поддерживает # для заголовков, > для цитат, - для списков)</label>
+            <textarea id="page-content" class="editor-textarea" placeholder="Напишите текст поста... Используйте # для заголовков, ## для подзаголовков"></textarea>
+            <div class="editor-buttons">
+              <button type="button" onclick="insertMarkdown('# ')">H1</button>
+              <button type="button" onclick="insertMarkdown('## ')">H2</button>
+              <button type="button" onclick="insertMarkdown('> ')">Цитата</button>
+              <button type="button" onclick="insertMarkdown('- ')">Список</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Загрузить изображения</label>
+            <div class="drop-area" id="drop-area">
+              Перетащите фото сюда или выберите файлы
+              <input type="file" id="photo-input" multiple accept="image/*" style="display:none;">
+            </div>
+            <div class="progress-bar" id="upload-progress">
+              <div class="progress-bar-inner" id="progress-inner"></div>
+            </div>
+            <div class="photo-preview-grid" id="photo-preview"></div>
+          </div>
+          <button class="btn" type="submit" id="generate-btn">Создать страницу</button>
+        </form>
+        <div class="success-msg" id="create-success"></div>
+        <div class="error-msg" id="create-error"></div>
+      </div>
+      <!-- Мои страницы -->
+      <div id="section-pages" class="hidden">
+        <div class="section-title">Мои страницы</div>
+        <div class="pages-list" id="pages-list"></div>
+      </div>
+      <!-- Управление паролями -->
+      <div id="section-passwords" class="hidden">
+        <div class="section-title">Управление паролями</div>
+        <div class="form-group">
+          <label for="page-select">Выберите страницу</label>
+          <select id="page-select" style="width:100%;padding:0.7em;border-radius:8px;border:1px solid #e2e8f0;">
+            <option value="">-- Выберите страницу --</option>
+          </select>
+        </div>
+        <button class="btn" id="generate-pwd-btn" style="margin-bottom:1.5em;">Сгенерировать пароль</button>
+        <div class="success-msg" id="pwd-success"></div>
+        <div class="error-msg" id="pwd-error"></div>
+        <div class="pages-list" id="passwords-list"></div>
+      </div>
+      <!-- Статистика -->
+      <div id="section-stats" class="hidden">
+        <div class="section-title">Статистика</div>
+        <div class="stats" id="stats-cards"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Галерея пользователя -->
+  <div id="gallery-page" class="hidden">
+    <div class="gallery-container">
+      <div class="gallery-title" id="gallery-title"></div>
+      <div class="masonry" id="gallery-masonry"></div>
+    </div>
+  </div>
+
+  <!-- Telegraph-пост -->
+  <div id="post-page" class="hidden">
+    <div class="telegraph-post">
+      <div class="telegraph-header">
+        <h1 class="telegraph-title" id="post-title"></h1>
+        <div class="telegraph-meta" id="post-meta"></div>
+      </div>
+      <div id="post-content" class="telegraph-content"></div>
+      <button class="btn" id="back-btn" style="display: block; margin: 3em auto 0;">← Назад</button>
+    </div>
+  </div>
+
+  <!-- Модальное окно для фото -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">&times;</button>
+      <img src="" alt="Фото" class="modal-img" id="modal-img">
+    </div>
+  </div>
+
+  <!-- Импорт данных (скрытый input) -->
+  <input type="file" id="import-file" accept="application/json" style="display:none;">
+
+  <!-- JS: Модульная архитектура, комментарии, обработка ошибок -->
+  <script>
+    // --- CONSTANTS ---
+    const ADMIN_PASSWORD = 'admin123';
+    const PASSWORD_LENGTH = 6;
+    const AUTO_REMOVE_HOURS = 24;
+    const LS_PAGES = 'pages';
+    const LS_USED = 'usedPasswords';
+
+    // --- UTILS ---
+    function showMsg(id, msg, type='error', timeout=2500) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), timeout);
+    }
+    function uuid() {
+      return 'xxxxxx'.replace(/[x]/g, () =>
+        ((Math.random()*36)|0).toString(36)
+      );
+    }
+    function now() {
+      return Date.now();
+    }
+    function formatDate(ts) {
+      const d = new Date(ts);
+      return d.toLocaleString('ru-RU');
+    }
+    function sleep(ms) {
+      return new Promise(res => setTimeout(res, ms));
+    }
+    // --- LOCALSTORAGE DB ---
+    function getPages() {
+      try {
+        let arr = JSON.parse(localStorage.getItem(LS_PAGES));
+        if (!Array.isArray(arr)) return [];
+        return arr;
+      } catch { return []; }
+    }
+    function setPages(arr) {
+      localStorage.setItem(LS_PAGES, JSON.stringify(arr));
+    }
+    function getUsedPasswords() {
+      try {
+        let arr = JSON.parse(localStorage.getItem(LS_USED));
+        if (!Array.isArray(arr)) return [];
+        return arr;
+      } catch { return []; }
+    }
+    function setUsedPasswords(arr) {
+      localStorage.setItem(LS_USED, JSON.stringify(arr));
+    }
+    function autoRemoveExpiredPasswords() {
+      let pages = getPages();
+      let used = getUsedPasswords();
+      const cutoff = now() - AUTO_REMOVE_HOURS*3600*1000;
+      let changed = false;
+      // Remove expired used passwords
+      used = used.filter(pw => {
+        const page = pages.find(pg => pg.password === pw);
+        if (!page) return false;
+        return page.createdAt > cutoff;
+      });
+      // Remove expired pages
+      pages = pages.filter(pg => pg.createdAt > cutoff || pg.password === ADMIN_PASSWORD);
+      setPages(pages);
+      setUsedPasswords(used);
+    }
+    // --- PAGE NAVIGATION ---
+    function showSection(id) {
+      document.querySelectorAll('#main-page, #admin-panel, #gallery-page, #post-page').forEach(e => e.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+    function showAdminSection(sec) {
+      document.querySelectorAll('#section-create, #section-pages, #section-stats, #section-passwords').forEach(e => e.classList.add('hidden'));
+      document.getElementById('section-' + sec).classList.remove('hidden');
+      document.querySelectorAll('.sidebar .nav-link').forEach(e => e.classList.remove('active'));
+      document.querySelector('.sidebar .nav-link[data-section="'+sec+'"]').classList.add('active');
+      if (sec === 'passwords') updatePasswordsSection();
+    }
+    // --- AUTH ---
+    function validatePassword(pw, type) {
+      if (type === 'admin') return pw === ADMIN_PASSWORD;
+      if (type === 'user') {
+        autoRemoveExpiredPasswords();
+        const pages = getPages();
+        const used = getUsedPasswords();
+        if (used.includes(pw)) return false;
+        return pages.some(pg => pg.passwords && pg.passwords.includes(pw));
+      }
+      return false;
+    }
+    function getPageByPassword(pw) {
+      const pages = getPages();
+      return pages.find(pg => pg.passwords && pg.passwords.includes(pw));
+    }
+    // --- AUTH UI ---
+    document.getElementById('login-btn').onclick = function() {
+      const pw = document.getElementById('password-input').value.trim();
+      const type = document.querySelector('input[name="authType"]:checked').value;
+      if (!pw) {
+        showMsg('auth-error', 'Введите пароль!');
+        return;
+      }
+      if (validatePassword(pw, type)) {
+        if (type === 'admin') {
+          showMsg('auth-success', 'Добро пожаловать, админ!', 'success');
+          sleep(700).then(() => {
+            showSection('admin-panel');
+            showAdminSection('create');
+          });
+        } else {
+          // User: redirect to post or gallery
+          showMsg('auth-success', 'Пароль принят! Загружаем контент...', 'success');
+          sleep(700).then(() => {
+            loadPost(pw);
+            // Mark password as used
+            let used = getUsedPasswords();
+            used.push(pw);
+            setUsedPasswords(used);
+          });
+        }
+      } else {
+        showMsg('auth-error', 'Неверный или использованный пароль!');
+      }
+    };
+    // Switcher
+    document.querySelectorAll('input[name="authType"]').forEach(el => {
+      el.onchange = () => {
+        document.getElementById('password-input').value = '';
+        document.getElementById('auth-error').classList.remove('show');
+        document.getElementById('auth-success').classList.remove('show');
+      };
+    });
+
+    // --- ADMIN PANEL NAVIGATION ---
+    document.querySelectorAll('.sidebar .nav-link[data-section]').forEach(el => {
+      el.onclick = () => showAdminSection(el.getAttribute('data-section'));
+    });
+    document.getElementById('logout-btn').onclick = () => {
+      showSection('main-page');
+      document.getElementById('password-input').value = '';
+    };
+
+    // --- CREATE PAGE ---
+    let uploadedPhotos = [];
+    // Drag & drop
+    const dropArea = document.getElementById('drop-area');
+    dropArea.onclick = () => document.getElementById('photo-input').click();
+    dropArea.ondragover = e => {
+      e.preventDefault();
+      dropArea.classList.add('dragover');
+    };
+    dropArea.ondragleave = e => {
+      e.preventDefault();
+      dropArea.classList.remove('dragover');
+    };
+    dropArea.ondrop = e => {
+      e.preventDefault();
+      dropArea.classList.remove('dragover');
+      handleFiles(e.dataTransfer.files);
+    };
+    document.getElementById('photo-input').onchange = e => {
+      handleFiles(e.target.files);
+    };
+    function handleFiles(files) {
+      uploadedPhotos = [];
+      document.getElementById('photo-preview').innerHTML = '';
+      if (!files.length) return;
+      const progress = document.getElementById('upload-progress');
+      const progressInner = document.getElementById('progress-inner');
+      progress.style.display = 'block';
+      let loaded = 0;
+      Array.from(files).forEach((file, idx, arr) => {
+        if (!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadedPhotos.push(e.target.result);
+          addPhotoPreview(e.target.result, uploadedPhotos.length - 1);
+          loaded++;
+          progressInner.style.width = ((loaded/arr.length)*100)+'%';
+          if (loaded === arr.length) {
+            setTimeout(() => progress.style.display = 'none', 500);
+          }
+        };
+        reader.onerror = () => showMsg('create-error', 'Ошибка загрузки файла!');
+        reader.readAsDataURL(file);
+      });
+    }
+    function addPhotoPreview(src, idx) {
+      const container = document.createElement('div');
+      container.style.position = 'relative';
+      container.style.display = 'inline-block';
+      container.style.margin = '0.35em';
+      
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'photo-preview';
+      img.onclick = (e) => {
+        e.stopPropagation();
+        showModal(src);
+      };
+      
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '×';
+      deleteBtn.style.position = 'absolute';
+      deleteBtn.style.top = '-8px';
+      deleteBtn.style.right = '-8px';
+      deleteBtn.style.background = 'var(--accent2)';
+      deleteBtn.style.color = '#fff';
+      deleteBtn.style.border = 'none';
+      deleteBtn.style.borderRadius = '50%';
+      deleteBtn.style.width = '24px';
+      deleteBtn.style.height = '24px';
+      deleteBtn.style.cursor = 'pointer';
+      deleteBtn.style.fontSize = '1.2em';
+      deleteBtn.style.padding = '0';
+      deleteBtn.style.lineHeight = '1';
+      deleteBtn.style.boxShadow = '0 2px 8px rgba(245,87,108,0.3)';
+      deleteBtn.style.transition = 'all 0.2s';
+      
+      deleteBtn.onmouseover = () => {
+        deleteBtn.style.transform = 'scale(1.2)';
+        deleteBtn.style.boxShadow = '0 4px 12px rgba(245,87,108,0.5)';
+      };
+      deleteBtn.onmouseout = () => {
+        deleteBtn.style.transform = 'scale(1)';
+        deleteBtn.style.boxShadow = '0 2px 8px rgba(245,87,108,0.3)';
+      };
+      
+      deleteBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        removePhoto(idx);
+      };
+      
+      container.appendChild(img);
+      container.appendChild(deleteBtn);
+      document.getElementById('photo-preview').appendChild(container);
+    }
+    function removePhoto(idx) {
+      uploadedPhotos.splice(idx, 1);
+      document.getElementById('photo-preview').innerHTML = '';
+      uploadedPhotos.forEach((src, i) => addPhotoPreview(src, i));
+    }
+    // Generate password
+    document.getElementById('create-page-form').onsubmit = function(e) {
+      e.preventDefault();
+      const title = document.getElementById('page-title').value.trim();
+      if (!title) {
+        showMsg('create-error', 'Введите название страницы!');
+        return;
+      }
+      if (!uploadedPhotos.length) {
+        showMsg('create-error', 'Загрузите хотя бы одну фотографию!');
+        return;
+      }
+      // Generate unique password
+      let pages = getPages();
+      let password;
+      do {
+        password = (Math.random()*1e6|0).toString().padStart(PASSWORD_LENGTH,'0');
+      } while (pages.some(pg => pg.password === password));
+      // Create page
+      const page = {
+        id: uuid(),
+        password,
+        title,
+        photos: uploadedPhotos,
+        createdAt: now(),
+        views: 0
+      };
+      pages.push(page);
+      setPages(pages);
+      showMsg('create-success', `Страница создана! Пароль: ${password}`, 'success', 4000);
+      document.getElementById('page-title').value = '';
+      document.getElementById('photo-preview').innerHTML = '';
+      uploadedPhotos = [];
+      updatePagesList();
+      updateStats();
+    };
+
+    // --- PAGES LIST (CRUD) ---
+    function updatePagesList() {
+      const pages = getPages();
+      const list = document.getElementById('pages-list');
+      list.innerHTML = '';
+      if (!pages.length) {
+        list.innerHTML = '<div style="text-align:center;color:var(--primary2);padding:1em;">Нет созданных страниц</div>';
+        return;
+      }
+      pages.forEach(pg => {
+        const div = document.createElement('div');
+        div.className = 'page-item';
+        const pwCount = pg.passwords ? pg.passwords.length : 0;
+        div.innerHTML = `
+          <span class="page-title">${pg.title}</span>
+          <span style="font-size:0.9em;color:#888;">${pg.photos.length} фото</span>
+          <span style="font-size:0.9em;color:#888;">${pwCount} паролей</span>
+          <span style="font-size:0.9em;color:#888;">${pg.views} просмотров</span>
+          <div class="page-actions">
+            <button title="Редактировать" onclick="editPage('${pg.id}')">&#9998;</button>
+            <button title="Удалить" onclick="deletePage('${pg.id}')">&#128465;</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+    
+    window.editPage = function(id) {
+      const pages = getPages();
+      const pg = pages.find(p => p.id === id);
+      if (!pg) return showMsg('create-error', 'Страница не найдена!');
+      showAdminSection('create');
+      document.getElementById('page-title').value = pg.title;
+      document.getElementById('page-content').value = pg.content || '';
+      document.getElementById('photo-preview').innerHTML = '';
+      uploadedPhotos = [...(pg.photos || [])];
+      uploadedPhotos.forEach((src, idx) => addPhotoPreview(src, idx));
+      
+      // On submit, update page instead of creating new
+      document.getElementById('create-page-form').onsubmit = function(e) {
+        e.preventDefault();
+        const title = document.getElementById('page-title').value.trim();
+        const content = document.getElementById('page-content').value.trim();
+        if (!title) {
+          showMsg('create-error', 'Введите название страницы!');
+          return;
+        }
+        if (!uploadedPhotos.length && !content) {
+          showMsg('create-error', 'Добавьте текст или фотографии!');
+          return;
+        }
+        pg.title = title;
+        pg.content = content;
+        pg.photos = uploadedPhotos;
+        setPages(pages);
+        showMsg('create-success', 'Страница обновлена!', 'success', 3000);
+        document.getElementById('page-title').value = '';
+        document.getElementById('page-content').value = '';
+        document.getElementById('photo-preview').innerHTML = '';
+        uploadedPhotos = [];
+        updatePagesList();
+        updateStats();
+        document.getElementById('create-page-form').onsubmit = defaultCreatePageFormSubmit;
+      };
+    };
+    
+    window.deletePage = function(id) {
+      if (!confirm('Удалить страницу? Все привязанные пароли будут удалены!')) return;
+      let pages = getPages();
+      pages = pages.filter(pg => pg.id !== id);
+      setPages(pages);
+      updatePagesList();
+      updatePasswordsSection();
+      updateStats();
+      showMsg('create-success', 'Страница удалена!', 'success', 2000);
+    }
+    
+    // Restore default submit after edit
+    const defaultCreatePageSubmit = document.getElementById('create-page-form').onsubmit;
+
+    // --- STATS ---
+    function updateStats() {
+      const pages = getPages();
+      const used = getUsedPasswords();
+      const stats = document.getElementById('stats-cards');
+      stats.innerHTML = '';
+      const totalPasswords = pages.reduce((sum, pg) => sum + (pg.passwords ? pg.passwords.length : 0), 0);
+      const stat1 = document.createElement('div');
+      stat1.className = 'stat-card';
+      stat1.innerHTML = `<div>Создано страниц</div><div style="font-size:2em;">${pages.length}</div>`;
+      const stat2 = document.createElement('div');
+      stat2.className = 'stat-card';
+      stat2.innerHTML = `<div>Всего паролей</div><div style="font-size:2em;">${totalPasswords}</div>`;
+      const stat3 = document.createElement('div');
+      stat3.className = 'stat-card';
+      stat3.innerHTML = `<div>Просмотров всего</div><div style="font-size:2em;">${pages.reduce((a,b)=>a+b.views,0)}</div>`;
+      stats.append(stat1, stat2, stat3);
+    }
+    
+    // --- PASSWORDS MANAGEMENT ---
+    function updatePasswordsSection() {
+      const pages = getPages();
+      const select = document.getElementById('page-select');
+      select.innerHTML = '<option value="">-- Выберите страницу --</option>';
+      pages.forEach(pg => {
+        const option = document.createElement('option');
+        option.value = pg.id;
+        option.textContent = pg.title;
+        select.appendChild(option);
+      });
+      document.getElementById('passwords-list').innerHTML = '';
+    }
+    
+    document.getElementById('generate-pwd-btn').onclick = function() {
+      const pageId = document.getElementById('page-select').value;
+      if (!pageId) {
+        showMsg('pwd-error', 'Выберите страницу!');
+        return;
+      }
+      
+      let pages = getPages();
+      const page = pages.find(pg => pg.id === pageId);
+      if (!page) {
+        showMsg('pwd-error', 'Страница не найдена!');
+        return;
+      }
+      
+      // Generate unique password
+      let password;
+      const used = getUsedPasswords();
+      do {
+        password = (Math.random()*1e6|0).toString().padStart(PASSWORD_LENGTH,'0');
+      } while (used.includes(password) || pages.some(pg => pg.passwords && pg.passwords.includes(password)));
+      
+      // Add password to page
+      if (!page.passwords) page.passwords = [];
+      page.passwords.push(password);
+      setPages(pages);
+      
+      showMsg('pwd-success', `Пароль создан: ${password}`, 'success', 3000);
+      updatePasswordsList(pageId);
+      updateStats();
+    };
+    
+    function updatePasswordsList(pageId) {
+      const pages = getPages();
+      const page = pages.find(pg => pg.id === pageId);
+      const list = document.getElementById('passwords-list');
+      
+      if (!page || !page.passwords || !page.passwords.length) {
+        list.innerHTML = '<div style="text-align:center;color:var(--primary2);padding:1em;">Нет паролей для этой страницы</div>';
+        return;
+      }
+      
+      list.innerHTML = '';
+      const title = document.createElement('h3');
+      title.style.marginTop = '1.5em';
+      title.textContent = `Пароли страницы "${page.title}"`;
+      list.appendChild(title);
+      
+      page.passwords.forEach(pw => {
+        const div = document.createElement('div');
+        div.className = 'page-item';
+        div.innerHTML = `
+          <span class="page-password">${pw}</span>
+          <div class="page-actions">
+            <button title="Копировать" onclick="navigator.clipboard.writeText('${pw}'); showMsg('pwd-success', 'Скопировано!', 'success', 1500)">📋</button>
+            <button title="Удалить" onclick="deletePassword('${pageId}', '${pw}')">&#128465;</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
+    
+    window.deletePassword = function(pageId, password) {
+      if (!confirm('Удалить пароль?')) return;
+      let pages = getPages();
+      const page = pages.find(pg => pg.id === pageId);
+      if (page && page.passwords) {
+        page.passwords = page.passwords.filter(pw => pw !== password);
+        setPages(pages);
+        updatePasswordsList(pageId);
+        updateStats();
+        showMsg('pwd-success', 'Пароль удален!', 'success', 2000);
+      }
+    };
+    
+    document.getElementById('page-select').onchange = function() {
+      const pageId = this.value;
+      if (pageId) {
+        updatePasswordsList(pageId);
+      }
+    };
+
+    // --- GALLERY ---
+    function loadGallery(password) {
+      const page = getPageByPassword(password);
+      if (!page) {
+        showMsg('auth-error', 'Страница не найдена!');
+        showSection('main-page');
+        return;
+      }
+      page.views = (page.views||0)+1;
+      setPages(getPages().map(pg => pg.id===page.id ? page : pg));
+      document.getElementById('gallery-title').textContent = page.title;
+      const masonry = document.getElementById('gallery-masonry');
+      masonry.innerHTML = '';
+      page.photos.forEach(src => {
+        const div = document.createElement('div');
+        div.className = 'masonry-item';
+        const img = document.createElement('img');
+        img.className = 'masonry-img';
+        img.loading = 'lazy';
+        img.src = src;
+        img.alt = 'Фото';
+        img.onload = () => img.classList.add('loaded');
+        img.onclick = () => showModal(src);
+        div.appendChild(img);
+        masonry.appendChild(div);
+      });
+    }
+
+    // --- MODAL (Lightbox) ---
+    function showModal(src) {
+      const modal = document.getElementById('modal');
+      document.getElementById('modal-img').src = src;
+      modal.classList.add('show');
+    }
+    document.getElementById('modal-close').onclick = () => {
+      document.getElementById('modal').classList.remove('show');
+      document.getElementById('modal-img').src = '';
+    };
+    document.getElementById('modal').onclick = e => {
+      if (e.target === e.currentTarget) document.getElementById('modal-close').onclick();
+    };
+
+    // --- EXPORT / IMPORT ---
+    document.getElementById('export-btn').onclick = () => {
+      const data = {
+        pages: getPages(),
+        usedPasswords: getUsedPasswords()
+      };
+      const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'gallery_data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showMsg('create-success', 'Данные экспортированы!', 'success', 2000);
+    };
+    document.getElementById('import-btn').onclick = () => {
+      document.getElementById('import-file').click();
+    };
+    document.getElementById('import-file').onchange = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          const data = JSON.parse(ev.target.result);
+          if (Array.isArray(data.pages)) setPages(data.pages);
+          if (Array.isArray(data.usedPasswords)) setUsedPasswords(data.usedPasswords);
+          updatePagesList();
+          updateStats();
+          showMsg('create-success', 'Данные импортированы!', 'success', 2000);
+        } catch {
+          showMsg('create-error', 'Ошибка импорта!');
+        }
+      };
+      reader.readAsText(file);
+    };
+
+    // --- MARKDOWN PARSER & EDITOR ---
+    function insertMarkdown(syntax) {
+      const textarea = document.getElementById('page-content');
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const text = textarea.value;
+      const selected = text.substring(start, end);
+      const newText = text.substring(0, start) + syntax + selected + text.substring(end);
+      textarea.value = newText;
+      textarea.focus();
+      textarea.setSelectionRange(start + syntax.length, start + syntax.length + selected.length);
+    }
+    
+    function parseMarkdown(md) {
+      if (!md) return '';
+      let html = md;
+      // Headings
+      html = html.replace(/^### (.*?)$/gm, '<h3>$1</h3>');
+      html = html.replace(/^## (.*?)$/gm, '<h2>$1</h2>');
+      html = html.replace(/^# (.*?)$/gm, '<h2>$1</h2>');
+      // Blockquotes
+      html = html.replace(/^> (.*?)$/gm, '<blockquote>$1</blockquote>');
+      // Lists
+      html = html.replace(/^- (.*?)$/gm, '<li>$1</li>');
+      html = html.replace(/(<li>.*?<\/li>)/s, '<ul>$1</ul>');
+      html = html.replace(/<\/ul>\n<ul>/g, '');
+      // Line breaks
+      html = html.replace(/\n\n/g, '</p><p>');
+      html = '<p>' + html + '</p>';
+      html = html.replace(/<p><(h[23]|blockquote|ul)>/g, '<$1>');
+      html = html.replace(/<\/(h[23]|blockquote|ul)><p>/g, '</$1>');
+      html = html.replace(/<p><\/p>/g, '');
+      return html;
+    }
+
+    // --- TELEGRAPH POST LOADING ---
+    function loadPost(password) {
+      const page = getPageByPassword(password);
+      if (!page) {
+        showMsg('auth-error', 'Пост не найден!');
+        showSection('main-page');
+        return;
+      }
+      
+      page.views = (page.views||0)+1;
+      setPages(getPages().map(pg => pg.id===page.id ? page : pg));
+      
+      // Show post page
+      document.getElementById('post-title').textContent = page.title;
+      document.getElementById('post-meta').innerHTML = `
+        <span>29 ноября 2025</span>
+        <span>${page.views} просмотров</span>
+      `;
+      
+      // Parse and render content with images
+      let contentHtml = '';
+      let photoIndex = 0;
+      
+      if (page.content) {
+        const lines = page.content.split('\n');
+        let buffer = [];
+        let photoCount = 1;
+        
+        lines.forEach((line, lineIdx) => {
+          if (line.startsWith('#')) {
+            if (buffer.length) {
+              contentHtml += '<p>' + buffer.join('<br>') + '</p>';
+              buffer = [];
+            }
+            if (line.startsWith('### ')) {
+              contentHtml += '<h3>' + line.substring(4) + '</h3>';
+            } else if (line.startsWith('## ')) {
+              contentHtml += '<h2>' + line.substring(3) + '</h2>';
+            } else if (line.startsWith('# ')) {
+              contentHtml += '<h2>' + line.substring(2) + '</h2>';
+            }
+          } else if (line.startsWith('> ')) {
+            if (buffer.length) {
+              contentHtml += '<p>' + buffer.join('<br>') + '</p>';
+              buffer = [];
+            }
+            contentHtml += '<blockquote>' + line.substring(2) + '</blockquote>';
+          } else if (line.startsWith('- ')) {
+            buffer.push(line.substring(2));
+          } else if (line.trim() === '') {
+            if (buffer.length) {
+              const isList = contentHtml.includes('<li>') || buffer.some(b => b.startsWith('- '));
+              if (isList && buffer.every(b => b.startsWith('- ') || !b.trim())) {
+                contentHtml += '<ul>' + buffer.map(b => '<li>' + (b.startsWith('- ') ? b.substring(2) : b) + '</li>').join('') + '</ul>';
+              } else {
+                // Добавляем фото сбоку перед параграфом
+                if (photoIndex < page.photos.length) {
+                  contentHtml += '<div class="photo-side"><img src="' + page.photos[photoIndex] + '" alt="Рис ' + photoCount + '" onclick="showModal(this.src)"><div class="photo-caption">Рис ' + photoCount + '</div></div>';
+                  photoIndex++;
+                  photoCount++;
+                }
+                contentHtml += '<p>' + buffer.filter(b => b.trim()).join('<br>') + '</p>';
+              }
+              buffer = [];
+            }
+          } else if (line.trim()) {
+            buffer.push(line);
+          }
+        });
+        
+        if (buffer.length) {
+          // Добавляем фото сбоку перед последним параграфом
+          if (photoIndex < page.photos.length) {
+            contentHtml += '<div class="photo-side"><img src="' + page.photos[photoIndex] + '" alt="Рис ' + photoCount + '" onclick="showModal(this.src)"><div class="photo-caption">Рис ' + photoCount + '</div></div>';
+            photoIndex++;
+            photoCount++;
+          }
+          contentHtml += '<p>' + buffer.join('<br>') + '</p>';
+        }
+      }
+      
+      // Add remaining photos in the end
+      while (photoIndex < page.photos.length) {
+        contentHtml += '<div style="clear:both;"></div>';
+        contentHtml += '<figure style="text-align:center;margin:2em 0;"><img src="' + page.photos[photoIndex] + '" alt="Рис ' + photoCount + '" onclick="showModal(this.src)" style="width:100%;border-radius:12px;box-shadow:0 4px 16px rgba(102,126,234,0.12);cursor:pointer;max-width:600px;"><figcaption class="photo-caption">Рис ' + photoCount + '</figcaption></figure>';
+        photoIndex++;
+        photoCount++;
+      }
+      
+      contentHtml += '<div style="clear:both;"></div>';
+      
+      document.getElementById('post-content').innerHTML = contentHtml;
+      showSection('post-page');
+    }
+
+    // --- CREATE PAGE WITH CONTENT ---
+    const defaultCreatePageFormSubmit = function(e) {
+      e.preventDefault();
+      const title = document.getElementById('page-title').value.trim();
+      const content = document.getElementById('page-content').value.trim();
+      
+      if (!title) {
+        showMsg('create-error', 'Введите заголовок страницы!');
+        return;
+      }
+      if (!content && !uploadedPhotos.length) {
+        showMsg('create-error', 'Добавьте текст или фотографии!');
+        return;
+      }
+      
+      let pages = getPages();
+      
+      const page = {
+        id: uuid(),
+        title,
+        content,
+        photos: uploadedPhotos,
+        createdAt: now(),
+        views: 0,
+        passwords: [] // Массив паролей для этой страницы
+      };
+      pages.push(page);
+      setPages(pages);
+      showMsg('create-success', `Страница "${title}" создана! Теперь привяжите к ней пароли.`, 'success', 4000);
+      document.getElementById('page-title').value = '';
+      document.getElementById('page-content').value = '';
+      document.getElementById('photo-preview').innerHTML = '';
+      uploadedPhotos = [];
+      updatePagesList();
+      updatePasswordsSection();
+      updateStats();
+    };
+    document.getElementById('create-page-form').onsubmit = defaultCreatePageFormSubmit;
+    
+    // Back button from post
+    document.getElementById('back-btn').onclick = () => {
+      showSection('main-page');
+      document.getElementById('password-input').value = '';
+    };
+
+    // --- INIT ---
+    function init() {
+      autoRemoveExpiredPasswords();
+      updatePagesList();
+      updateStats();
+    }
+    window.onload = init;
+    // --- END ---
+  </script>
+</body>
+</html>
