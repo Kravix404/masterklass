@@ -1,1 +1,0 @@
-# galkindvor.github.io
